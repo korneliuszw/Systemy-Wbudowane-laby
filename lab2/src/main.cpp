@@ -22,15 +22,22 @@ short int columns[] = {P4, P3, P2, P1};
 #define P8 A0 // 14
 short int rows[] = {P8, P7, P6, P5};
 
+#define BTN_CLEAR '#'
+#define BTN_DEL '*'
+
+// -2 = don't care
 char keypad[4][4] = {
-  {1, 2, 3, 'A'},
-  {4, 5, 6, 'B'},
-  {7, 8, 9, 'C'},
-  {-2, 0, -2, 'D'}
+  {1, 2, 3, -2},
+  {4, 5, 6, -2},
+  {7, 8, 9, -2},
+  {BTN_DEL, 0, BTN_CLEAR, -2}
 };
 
 char readKeyPad() {
   char val = -1;
+  // for(int i = 0; i < 4; i++) {
+  //   digitalWrite(columns[i], HIGH);
+  // }
   for(int i = 0; i < 4; i++) {
     digitalWrite(columns[i], LOW);
     for(int j = 0; j < 4; j++) {
@@ -64,19 +71,27 @@ void writeToLcd(unsigned int in) {
   writeSegment(SEGMENT_G, ((~b & c) | (a & ~b) | (c & ~d) | (~a & b & ~c))); // B'C + AB' + CD' + A'BC'
 }
 
-void printDigit(unsigned char display, unsigned char in) { 
+void clearSegments() {
+  for (int i = SEGMENT_A; i <= SEGMENT_G; i++) {
+    digitalWrite(i, HIGH);
+  }
+}
+
+void printDigit(unsigned char display, char in) { 
   for (int i = 15; i <= 18; i++) {
     digitalWrite(i, LOW);
   }
   if (display > 3) return;
   int pin = 15 + display;
-  writeToLcd(in);
+  if (in >= 0) {
+    writeToLcd(in);
+  } else {
+    clearSegments();
+  }
   digitalWrite(pin, HIGH);
   delay(2);
   digitalWrite(pin, LOW);
-  for (int i = SEGMENT_A; i <= SEGMENT_G; i++) {
-    digitalWrite(i, HIGH);
-  }
+  clearSegments();
 }
 
 void setup() {
@@ -92,27 +107,23 @@ void setup() {
   }
 }
 
-char getCurrentDiplay(char key) {
-  switch (key) {
-    case 'A': return 3;
-    case 'B': return 2;
-    case 'C': return 1;
-    case 'D': return 0;
-    default: return -1;
-  }
-}
 
-char currentDisplay = 0;
+unsigned int currentNumber = 0;
 
 void readDigitValue() {
+  static char previous_key = -1;
   char key = readKeyPad();
-  if (key < 0) return;
-  char display = getCurrentDiplay(key);
-  if (display != -1) {
-    currentDisplay = display;
-    return;
+  if (previous_key == key){
+
+  } else if (key == BTN_CLEAR) {
+    currentNumber = 0;
+  }else if (key == BTN_DEL) {
+    currentNumber /= 10;
+  } else  if (previous_key == -1 && key != previous_key && currentNumber <= 999) {
+    currentNumber = (currentNumber * 10) + key;
   }
-  digits[DIGITS - 1 - currentDisplay] = key;
+  previous_key = key;
+  if (key < 0) return;
   for (int i = 0; i < DIGITS; i++) {
     digitalWrite(columns[i], LOW);
   }
@@ -120,9 +131,15 @@ void readDigitValue() {
 
 void loop() {
   readDigitValue();
+  int number = currentNumber;
+  char digit = number % 10;
   for (int i = 0; i < DIGITS; i++) {
-    Serial.print(digits[i], DEC);
-    printDigit(i, digits[DIGITS - 1 - i]);
+    printDigit(i, digit);
+    if (number < 10) digit = -1;
+    else {
+      number /= 10;
+      digit = number % 10;
+    }
   }
   Serial.println();
 }
