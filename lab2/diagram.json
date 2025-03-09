@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 221.4, "left": 37.8, "attrs": {} },
+    {
+      "type": "wokwi-7segment",
+      "id": "sevseg1",
+      "top": 149.82,
+      "left": 346.72,
+      "attrs": { "digits": "4" }
+    },
+    { "type": "wokwi-membrane-keypad", "id": "keypad1", "top": -203.6, "left": -52, "attrs": {} }
+  ],
+  "connections": [
+    [ "keypad1:R1", "uno:A0", "green", [ "v0" ] ],
+    [ "keypad1:R2", "uno:13", "green", [ "v0" ] ],
+    [ "keypad1:R3", "uno:12", "green", [ "v0" ] ],
+    [ "keypad1:R4", "uno:11", "green", [ "v0" ] ],
+    [ "keypad1:C1", "uno:A4", "green", [ "v0" ] ],
+    [ "keypad1:C2", "uno:A3", "green", [ "v0" ] ],
+    [ "keypad1:C3", "uno:A2", "green", [ "v0" ] ],
+    [ "keypad1:C4", "uno:A1", "green", [ "v0" ] ],
+    [ "sevseg1:DP", "uno:9", "green", [ "v0" ] ],
+    [ "sevseg1:CLN", "uno:10", "green", [ "h0" ] ],
+    [ "sevseg1:A", "uno:2", "green", [ "v0" ] ],
+    [ "sevseg1:E", "uno:6", "green", [ "v0" ] ],
+    [ "sevseg1:C", "uno:4", "green", [ "v0" ] ],
+    [ "sevseg1:D", "uno:5", "green", [ "v0" ] ],
+    [ "sevseg1:G", "uno:8", "green", [ "v0" ] ],
+    [ "sevseg1:F", "uno:7", "green", [ "v0" ] ],
+    [ "sevseg1:B", "uno:3", "green", [ "v0" ] ],
+    [ "uno:A4", "sevseg1:DIG1", "green", [ "v0" ] ],
+    [ "uno:A3", "sevseg1:DIG2", "green", [ "v0" ] ],
+    [ "uno:A2", "sevseg1:DIG3", "green", [ "v0" ] ],
+    [ "uno:A1", "sevseg1:DIG4", "green", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}
