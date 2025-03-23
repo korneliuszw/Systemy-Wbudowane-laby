@@ -2,7 +2,8 @@ from time import sleep
 import numpy as np
 import serial
 
-ser = serial.serial_for_url('rfc2217://localhost:4000', baudrate=115200)
+# ser = serial.serial_for_url('rfc2217://localhost:4000', baudrate=115200)
+ser=serial.Serial(port="COM5",baudrate=115200)
 frames = 6955
 
 for x in range(232, frames):
@@ -21,12 +22,15 @@ for x in range(232, frames):
             # Extract a 5x10 slice for the current character
             char_array = data[8:16, i*5:(i+1)*5]
             result.append(char_array)
+        ser.write(bytearray([215]))
         for array in result:
             char = bytearray([0] * 8)
             for row in range(8):
                 for bit in range(5):
                     char[row] = (char[row] << 1) | (array[row][bit] & 1)
             ser.write(char)
+        print("Send!")
         sleep(1 / 10)
-        print("Message received!")
-        # exit()
+        # while ser.read() != 215:
+        #     print(ser.in_waiting)
+        #     sleep(0.01)

@@ -25,19 +25,18 @@ LiquidCrystal lcd(RS, E, D0, D1, D2, D3, D4, D5, D6, D7);
 // LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     lcd.begin(16, 2, LCD_5x8DOTS);
     // lcd.print("Hello World!");
     // lcd.cursor();
   
 }
 
-int frameCounter = 0;
-
 void readFrame() {
+    auto rxe = Serial.readBytes(buffer, 1);
+    if (rxe == 0) return;
+    if (buffer[0] != 215) return;
     auto rx = Serial.readBytes(buffer, 8 * 8);
-    Serial.println("Received smh");
-    Serial.println(rx, DEC);
     if (rx < FRAME_SIZE) {
         // what to do now?
         return;
@@ -53,10 +52,8 @@ void readFrame() {
             lcd.write(ch++);
         }
     }
-    frameCounter++;
-    Serial.print("Frame: ");
-    Serial.println(frameCounter, DEC);
-    Serial.write(0xDEADBEEF);
+    Serial.write(byte(215));
+    Serial.flush();
 }
 
 void loop() {
