@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <LiquidCrystal.h>
-#include <TimerOne.h>
 #define RS 12
 #define E 11
 #define D4 5

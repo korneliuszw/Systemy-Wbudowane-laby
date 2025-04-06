@@ -1,19 +1,16 @@
 #include <Arduino.h>
 #include <LiquidCrystal.h>
-#include <BMP280.h>
+#include <i2c_BMP280.h>
 #define RS 12
 #define E 11
 #define D0 9
-#define D1 8
-#define D2 7
-#define D3 6
 #define D4 5
 #define D5 4
 #define D6 3
 #define D7 2
 
 
-LiquidCrystal lcd(RS, E, D0, D1, D2, D3, D4, D5, D6, D7);
+LiquidCrystal lcd(RS, E, D4, D5, D6, D7);
 BMP280 bmp;
 
 
@@ -25,7 +22,7 @@ enum CurrentUnit {
 
 CurrentUnit units = CELCIUS;
 
-double getConvertedUnit(double temp) {
+float getConvertedUnit(float temp) {
   switch (units) {
     case CELCIUS:
       return temp;
@@ -39,11 +36,11 @@ double getConvertedUnit(double temp) {
 void printUnit() {
   switch (units) {
     case CELCIUS:
-      lcd.print(223);
+      lcd.print((char) 223);
       lcd.print("C");
       break;
     case FAHRENHEIT:
-      lcd.print(223);
+      lcd.print((char) 223);
       lcd.print("F");
       break;
     case KELVIN:
@@ -52,32 +49,30 @@ void printUnit() {
   }
 }
 
-void printTemperature(double temp) {
+void printTemperature(float temp) {
   lcd.print("T: ");
   Serial.print("T=");
   Serial.println(temp, DEC);
-  int intPart = (int) temp;
-  int twoDecimalsPlaces = (temp - intPart) * 100.0;
-  lcd.print(intPart, DEC);
-  if (twoDecimalsPlaces > 0) {
-    lcd.print(".");
-    lcd.print(twoDecimalsPlaces,  DEC);
-  }
+  // int intPart = (int) temp;
+  // float twoDecimalsPlaces = (temp - intPart) * 100.0;
+  lcd.print(temp, DEC);
+  // if (twoDecimalsPlaces > 0) {
+  //   lcd.print(".");
+  //   lcd.print((int) twoDecimalsPlaces,  DEC);
+  // }
   printUnit();
-  lcd.println();
 }
-void printPressure(double press) {
-  double pascals = press / 100000;
+void printPressure(float pascals) {
   lcd.print("P:");
-  Serial.print("P=");
-  Serial.println(press, DEC);
-  int intPart = (int) pascals;
-  int twoDecimalsPlaces = (pascals - intPart) * 100.0;
-  lcd.print(intPart, DEC);
-  if (twoDecimalsPlaces > 0) {
-    lcd.print(".");
-    lcd.print(twoDecimalsPlaces,  DEC);
-  }
+  // Serial.print("P=");
+  // Serial.println(press, DEC);
+  // int intPart = (int) pascals;
+  // float twoDecimalsPlaces = (pascals - intPart) * 100.0;
+  lcd.print(pascals, DEC);
+  // if (twoDecimalsPlaces > 0) {
+  //   lcd.print(".");
+  //   lcd.print((int) twoDecimalsPlaces,  DEC);
+  // }
   lcd.println("Pa");
 }
 
@@ -96,31 +91,30 @@ void checkSwitches() {
 }
 
 void setup() {
+    bmp.initialize();
     Serial.begin(9600);
-    lcd.begin(16, 2, LCD_5x8DOTS);
+    lcd.begin(16, 2);
+    lcd.println("Hello world!");
     // lcd.print("Hello World!");
     // lcd.cursor();
-    bmp.setOversampling(4);
 }
 
 void loop() {
+  // return;
   checkSwitches();
   // returns time to wait for measurement 
-  char result = bmp.startMeasurment();
-  if (result == 0) {
-    Serial.println("Failed to start measure"); 
-    return;
-  }
-  delay(result);
-  double temp, pres;
+  bmp.awaitMeasurement();
+  Serial.println("Gow measuremenet");
+  float temp, pres;
   // 0 if failed
-  result = bmp.getTemperatureAndPressure(temp, pres);
-  if (result == 0) {
-    Serial.println("Fail to receive measurement");
-    return;
-  }
+  bmp.getTemperature(temp);
+  bmp.getPressure(pres);
+  Serial.print(temp, DEC);
+  Serial.print(" ");
+  Serial.println(pres, DEC);
   lcd.clear();
   printTemperature(temp);
+  lcd.setCursor(0, 1);
   printPressure(pres);
   delay(2);
 }
