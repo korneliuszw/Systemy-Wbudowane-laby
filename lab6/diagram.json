@@ -58,7 +58,8 @@
       [ "pir1:OUT", "uno:10", "green", [ "v0" ] ],
       [ "ultrasonic1:GND", "uno:GND.2", "black", [ "v0" ] ],
       [ "ultrasonic1:VCC", "uno:5V", "red", [ "v0" ] ],
-      [ "ultrasonic1:ECHO", "uno:9", "green", [ "v0" ] ]
+      [ "ultrasonic1:ECHO", "uno:9", "green", [ "v0" ] ],
+      [ "ultrasonic1:TRIG", "uno:8", "green", [ "v0" ] ]
     ],
     "dependencies": {}
   }

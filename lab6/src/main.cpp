@@ -54,13 +54,16 @@ bool shouldPrintMotionDetected() {
 }
 
 void loop() {
-  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Ruch: ");
   if (shouldPrintMotionDetected()) {
-    lcd.print("Ruch");
+    lcd.print("TAK");
   } else {
-    lcd.print("Brak ruchu");
+    lcd.print("NIE");
   }
   double distance = measureDistanceCm();
+  lcd.setCursor(0,1);
+  lcd.print("         ");
   lcd.setCursor(0,1);
   lcd.print("Odl: ");
   if (distance > 200.0) {
@@ -68,5 +71,4 @@ void loop() {
   } else {
     printTwoDecimalPlaces(distance);
   }
-  delay(100);
 }
