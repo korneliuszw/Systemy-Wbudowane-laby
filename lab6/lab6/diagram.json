@@ -1,0 +1,64 @@
+{
+    "version": 1,
+    "author": "Benjamin Jurewicz",
+    "editor": "wokwi",
+    "parts": [
+      { "type": "wokwi-arduino-uno", "id": "uno", "top": -28.2, "left": -58.2, "attrs": {} },
+      { "type": "wokwi-lcd1602", "id": "lcd1", "top": -255.77, "left": -41.6, "attrs": {} },
+      {
+        "type": "wokwi-pir-motion-sensor",
+        "id": "pir1",
+        "top": 259.2,
+        "left": 21.98,
+        "rotate": 180,
+        "attrs": {}
+      },
+      {
+        "type": "wokwi-hc-sr04",
+        "id": "ultrasonic1",
+        "top": 278.9,
+        "left": 170.1,
+        "rotate": 180,
+        "attrs": {}
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r1",
+        "top": -91.2,
+        "left": -19.75,
+        "rotate": 90,
+        "attrs": { "value": "2000" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r2",
+        "top": -91.2,
+        "left": 95.45,
+        "rotate": 90,
+        "attrs": { "value": "330" }
+      }
+    ],
+    "connections": [
+      [ "uno:GND.1", "r1:2", "black", [ "v0" ] ],
+      [ "r1:1", "lcd1:V0", "green", [ "h0" ] ],
+      [ "lcd1:A", "r2:1", "green", [ "v0" ] ],
+      [ "r2:2", "uno:5V", "green", [ "h172.8", "v238.8", "h-192" ] ],
+      [ "lcd1:K", "uno:GND.1", "green", [ "v86.4", "h-76.8" ] ],
+      [ "lcd1:D7", "uno:2", "green", [ "v76.8", "h57.9", "v9.6" ] ],
+      [ "lcd1:D6", "uno:3", "green", [ "v76.8", "h0.2" ] ],
+      [ "lcd1:D5", "uno:4", "green", [ "v86.4", "h57.7" ] ],
+      [ "lcd1:D4", "uno:5", "green", [ "v76.8", "h57.6", "v9.6" ] ],
+      [ "lcd1:E", "uno:11", "green", [ "v38.4", "h48" ] ],
+      [ "uno:12", "lcd1:RS", "green", [ "v-86.4", "h-57.1" ] ],
+      [ "lcd1:RW", "uno:GND.1", "green", [ "v48", "h28.7", "v9.6" ] ],
+      [ "lcd1:VDD", "uno:5V", "green", [ "v316.8", "h105.7" ] ],
+      [ "lcd1:VSS", "uno:GND.1", "green", [ "v86.4", "h67.2" ] ],
+      [ "pir1:GND", "uno:GND.2", "black", [ "v-38.4", "h48.26", "v-57.5" ] ],
+      [ "pir1:VCC", "uno:5V", "red", [ "v0" ] ],
+      [ "pir1:OUT", "uno:10", "green", [ "v0" ] ],
+      [ "ultrasonic1:GND", "uno:GND.2", "black", [ "v0" ] ],
+      [ "ultrasonic1:VCC", "uno:5V", "red", [ "v0" ] ],
+      [ "ultrasonic1:ECHO", "uno:9", "green", [ "v0" ] ]
+    ],
+    "dependencies": {}
+  }
