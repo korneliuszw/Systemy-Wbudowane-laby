@@ -14,12 +14,24 @@
 
 LiquidCrystal lcd(RS, E, D4, D5, D6, D7);
 
+char ludzik[] = {
+  0b00000,
+  0b00100,
+  0b01010,
+  0b10001,
+  0b01010,
+  0b00100,
+  0b00000,
+  0b00000,
+};
+
 void setup() {
   Serial.begin(9600);
   lcd.begin(16, 2, LCD_5x8DOTS);
   pinMode(MOTION, INPUT);
   pinMode(ECHO, INPUT);
   pinMode(TRIG, OUTPUT);
+  lcd.createChar(0, ludzik);
 }
 
 void printTwoDecimalPlaces(double num) {
@@ -33,10 +45,10 @@ void printTwoDecimalPlaces(double num) {
 
 double measureDistanceCm() {
   digitalWrite(TRIG, HIGH);
-  delayMicroseconds(10);
+  delayMicroseconds(20);
   digitalWrite(TRIG, LOW);
   unsigned long echoDuration = pulseIn(ECHO, HIGH);
-  return echoDuration / 2.0 / 29.1;
+  return echoDuration / 58.0;
 }
 
 inline bool didDetectMotion() {
@@ -53,22 +65,21 @@ bool shouldPrintMotionDetected() {
   return time < lastMotionDetectedTime + MOTION_DURATION;
 }
 
+void showProgress(double distance, bool motion) {
+  static int cursor = 0;
+  if (distance < 150.0) {
+    lcd.setCursor(cursor, 0);
+    lcd.print(" ");
+    cursor = distance / 10;
+  }
+  lcd.setCursor(cursor, 0);
+  lcd.write('\0');
+}
+
 void loop() {
-  lcd.setCursor(0, 0);
-  lcd.print("Ruch: ");
-  if (shouldPrintMotionDetected()) {
-    lcd.print("TAK");
-  } else {
-    lcd.print("NIE");
-  }
+  bool motion = shouldPrintMotionDetected();
   double distance = measureDistanceCm();
-  lcd.setCursor(0,1);
-  lcd.print("         ");
-  lcd.setCursor(0,1);
-  lcd.print("Odl: ");
-  if (distance > 200.0) {
-    lcd.print("OoR");
-  } else {
-    printTwoDecimalPlaces(distance);
-  }
+  Serial.println(distance, DEC);
+  distance = measureDistanceCm();
+  showProgress(distance, motion);
 }
