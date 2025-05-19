@@ -1,5 +1,6 @@
 #include <SPI.h>
 #include <MFRC522.h>
+#include <zelda.cpp>
 
 #define SS_PIN 10
 #define RST_PIN 9
@@ -77,13 +78,39 @@ void pairTags(byte tag[]) {
     Serial.println("Tag 1 has been saved.");
     Serial.println("Now place the second tag to save it as Tag 2.");
 
-  } else if (!compareUids(rfid.uid.uidByte, uidTag1)) {
+  } else if (compareUids(rfid.uid.uidByte, uidTag1)) {
     Serial.println("This tag is already saved as Tag 1. Place another, unique tag.");
 
   } else if (!isUidTag2Saved){
     pairTag(uidTag2, tag, isUidTag2Saved);
     Serial.println("Tag 2 has been saved.");
     Serial.println("Both tags have been saved. Now the program will react to them accordingly.");
+  }
+}
+
+void playSong(){
+    for (int thisNote = 0; thisNote < sizeof(p0_notes)/sizeof(p0_notes[0]); thisNote++) {
+
+    // to calculate the note duration, take one second divided by the note type.
+
+    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+
+    int noteDuration = 1000 / p0_delays[thisNote];
+
+    tone(BUZZER_PIN, p0_notes[thisNote] + 440, noteDuration);
+
+    // to distinguish the notes, set a minimum time between them.
+
+    // the note's duration + 30% seems to work well:
+
+    int pauseBetweenNotes = p0_delays[thisNote + 1] * 1.30;
+
+    delay(pauseBetweenNotes);
+
+    // stop the tone playing:
+
+    noTone(BUZZER_PIN);
+
   }
 }
 
@@ -99,7 +126,8 @@ void setup() {
   digitalWrite(LED_GREEN, HIGH);
   digitalWrite(LED_RED, HIGH);
 
-
+  Serial.println("Playing Song...");
+  playSong();
   Serial.println("Place the first RFID tag to save it as Tag 1...");
 }
 
