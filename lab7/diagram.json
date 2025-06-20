@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 0.6, "left": 114.6, "attrs": {} },
+    { "type": "wokwi-mpu6050", "id": "imu1", "top": 263.02, "left": 271.12, "attrs": {} },
+    {
+      "type": "wokwi-ili9341",
+      "id": "lcd1",
+      "top": -52.7,
+      "left": 519.6,
+      "rotate": 90,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [ "imu1:VCC", "uno:3.3V", "red", [ "v-48", "h0.08" ] ],
+    [ "imu1:GND", "uno:GND.2", "black", [ "v-38.4", "h0.08" ] ],
+    [ "imu1:SCL", "uno:A5", "magenta", [ "v-19.2", "h43.78" ] ],
+    [ "imu1:SDA", "uno:A4", "cyan", [ "v-28.8", "h43.88" ] ],
+    [ "uno:5V", "lcd1:VCC", "red", [ "v19.1", "h493.4", "v-211.2", "h-307.2", "v57.6" ] ],
+    [ "uno:GND.3", "lcd1:GND", "black", [ "v9.5", "h484", "v-211.2", "h-326.4", "v76.8" ] ],
+    [ "lcd1:CS", "uno:10", "yellow", [ "h-48", "v-124.8", "h-154.3" ] ],
+    [ "lcd1:MOSI", "uno:11", "orange", [ "h-38.4", "v-163.21", "h-173.4" ] ],
+    [ "lcd1:SCK", "uno:13", "red", [ "h-28.8", "v-182.41", "h-202" ] ],
+    [ "lcd1:D/C", "uno:7", "purple", [ "h-76.8", "v-115.2", "h-90" ] ],
+    [ "lcd1:RST", "uno:8", "blue", [ "h-67.2", "v-115.2", "h-115.6" ] ],
+    [ "lcd1:LED", "uno:9", "limegreen", [ "h-57.6", "v-163.21", "h-135.2" ] ]
+  ],
+  "dependencies": {}
+}
